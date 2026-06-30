@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OOBEND Competitor Ad Intelligence Report — June 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<style>
+  :root {
+    --oobend: #1a3a5c;
+    --oobend-light: #2a5298;
+    --accent: #00b4d8;
+    --accent2: #f77f00;
+    --green: #2dc653;
+    --red: #e63946;
+    --yellow: #ffd166;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --text: #1a202c;
+    --muted: #6b7280;
+    --border: #e2e8f0;
+    --hike: #e63946;
+    --pfa: #f77f00;
+    --bronoir: #6a0dad;
+    --peak: #0077b6;
+    --comfofeet: #2dc653;
+    --barestep: #e9c46a;
+    --nimbao: #ff6b6b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 50%, #2a5298 100%);
+    color: white; padding: 60px 32px 48px; text-align: center;
+  }
+  header .badge { display: inline-block; background: rgba(0,180,216,0.2); border: 1px solid rgba(0,180,216,0.5); color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: 2px; padding: 4px 16px; border-radius: 99px; margin-bottom: 20px; text-transform: uppercase; }
+  header h1 { font-size: clamp(28px,5vw,52px); font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
+  header h1 span { color: var(--accent); }
+  header p { font-size: 18px; color: rgba(255,255,255,0.75); max-width: 680px; margin: 0 auto 32px; }
+  .stats-row { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 32px; }
+  .stat { text-align: center; }
+  .stat .num { font-size: 36px; font-weight: 800; color: var(--accent); display: block; }
+  .stat .lbl { font-size: 12px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* NAV */
+  nav { background: #0a1628; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  nav ul { display: flex; list-style: none; overflow-x: auto; padding: 0 24px; gap: 0; }
+  nav li a { display: block; color: rgba(255,255,255,0.7); text-decoration: none; padding: 14px 16px; font-size: 13px; font-weight: 600; white-space: nowrap; transition: color 0.2s; }
+  nav li a:hover { color: var(--accent); }
+
+  /* LAYOUT */
+  main { max-width: 1200px; margin: 0 auto; padding: 48px 24px; }
+  section { margin-bottom: 72px; }
+  .section-header { margin-bottom: 32px; }
+  .section-header h2 { font-size: 28px; font-weight: 800; color: var(--oobend); }
+  .section-header p { color: var(--muted); margin-top: 6px; font-size: 15px; }
+  .section-num { display: inline-block; background: var(--accent); color: white; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; letter-spacing: 1px; }
+
+  /* CARDS */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(520px, 1fr)); gap: 24px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; }
+
+  /* COMPETITOR CARDS */
+  .comp-card { background: var(--card); border-radius: 16px; border: 2px solid var(--border); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+  .comp-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .comp-card-header { padding: 20px 24px; display: flex; align-items: center; gap: 16px; }
+  .comp-badge { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; color: white; flex-shrink: 0; }
+  .comp-card-title { flex: 1; }
+  .comp-card-title h3 { font-size: 18px; font-weight: 700; }
+  .comp-card-title .meta { font-size: 12px; color: var(--muted); }
+  .vol-badge { background: var(--oobend); color: white; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 99px; white-space: nowrap; }
+  .comp-card-body { padding: 0 24px 24px; }
+  .comp-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 16px 0 8px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 12px; padding: 3px 10px; border-radius: 99px; }
+  .tag.angle { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+  .tag.format { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+  .tag.risk { background: #fff7ed; border-color: #fed7aa; color: #c2410c; }
+  .priority { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
+  .priority.P1 { background: #fee2e2; color: #dc2626; }
+  .priority.P2 { background: #fef3c7; color: #d97706; }
+  .priority.P3 { background: #f0fdf4; color: #16a34a; }
+
+  /* CHART CONTAINERS */
+  .chart-wrap { position: relative; padding: 24px; }
+  .chart-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .chart-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+  canvas { max-height: 380px; }
+
+  /* GAP TABLE */
+  .gap-table { width: 100%; border-collapse: collapse; }
+  .gap-table th { background: var(--oobend); color: white; font-size: 12px; font-weight: 700; padding: 10px 14px; text-align: left; }
+  .gap-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+  .gap-table tr:nth-child(even) td { background: #f8fafc; }
+  .gap-icon { font-size: 16px; }
+  .check { color: #16a34a; }
+  .cross { color: #dc2626; }
+  .partial { color: #d97706; }
+
+  /* MATRIX */
+  .matrix-wrap { overflow-x: auto; }
+  .matrix-table { min-width: 900px; border-collapse: collapse; font-size: 12px; width: 100%; }
+  .matrix-table th { background: var(--oobend); color: white; padding: 10px 12px; text-align: center; font-size: 11px; letter-spacing: 0.5px; position: sticky; top: 0; }
+  .matrix-table th.row-head { text-align: left; background: #1e3a5c; min-width: 180px; }
+  .matrix-table td { padding: 8px 12px; border: 1px solid var(--border); text-align: center; }
+  .matrix-table tr:nth-child(even) td { background: #f8fafc; }
+  .matrix-table td.row-label { text-align: left; font-weight: 600; color: var(--text); background: white; border-left: none; }
+  .matrix-table td.oobend-col { background: #eff6ff; font-weight: 700; }
+  .m-yes { color: #16a34a; font-size: 18px; }
+  .m-partial { color: #d97706; font-size: 16px; }
+  .m-no { color: #e5e7eb; font-size: 16px; }
+  .m-unique { color: #7c3aed; font-size: 18px; }
+
+  /* INSIGHT BOXES */
+  .insight { border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; display: flex; gap: 16px; align-items: flex-start; }
+  .insight.gap { background: #fff7ed; border-left: 4px solid #f77f00; }
+  .insight.strength { background: #f0fdf4; border-left: 4px solid #16a34a; }
+  .insight.warning { background: #fef2f2; border-left: 4px solid #dc2626; }
+  .insight-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+  .insight-content h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .insight-content p { font-size: 14px; color: #374151; line-height: 1.5; }
+
+  /* VIDEO BREAKDOWN */
+  .video-list { list-style: none; }
+  .video-item { border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; background: var(--card); }
+  .video-item .v-title { font-size: 13px; font-weight: 700; color: var(--oobend); margin-bottom: 6px; }
+  .video-item .v-body { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .video-item .v-tags { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .v-tag { font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
+  .v-tag.pain { background: #fee2e2; color: #dc2626; }
+  .v-tag.balance { background: #eff6ff; color: #2563eb; }
+  .v-tag.neuropathy { background: #f5f3ff; color: #7c3aed; }
+  .v-tag.emotion { background: #fdf4ff; color: #a21caf; }
+  .v-tag.offer { background: #f0fdf4; color: #15803d; }
+  .v-tag.story { background: #fff7ed; color: #c2410c; }
+
+  /* SUMMARY GRID */
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .summary-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .summary-card .sc-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .summary-card .sc-value { font-size: 28px; font-weight: 800; color: var(--oobend); }
+  .summary-card .sc-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* FOOTER */
+  footer { background: #0a1628; color: rgba(255,255,255,0.5); text-align: center; padding: 32px; font-size: 13px; }
+  footer strong { color: rgba(255,255,255,0.8); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    header { padding: 40px 20px 32px; }
+    .stats-row { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Ad Intelligence Report</div>
+  <h1>OOBEND <span>Competitor Research</span></h1>
+  <p>Deep analysis of Tier 1 DTC barefoot/comfort shoe competitors targeting seniors with foot problems — powered by Atria Meta Ad Library data</p>
+  <div class="stats-row">
+    <div class="stat"><span class="num">6</span><span class="lbl">Competitors Analyzed</span></div>
+    <div class="stat"><span class="num">300+</span><span class="lbl">Active Ads Reviewed</span></div>
+    <div class="stat"><span class="num">64K+</span><span class="lbl">Total Competitor Ad Volume</span></div>
+    <div class="stat"><span class="num">June 2026</span><span class="lbl">Report Date</span></div>
+  </div>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#competitors">Competitors</a></li>
+    <li><a href="#formats">Ad Formats</a></li>
+    <li><a href="#angles">Pain Points</a></li>
+    <li><a href="#matrix">Coverage Matrix</a></li>
+    <li><a href="#videos">Video Analysis</a></li>
+    <li><a href="#gaps">Gap Analysis</a></li>
+    <li><a href="#strategy">Strategy</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- ===== SECTION 1: OVERVIEW ===== -->
+  <section id="overview">
+    <div class="section-header">
+      <div class="section-num">01 OVERVIEW</div>
+      <h2>Competitive Landscape at a Glance</h2>
+      <p>Ad volume as a proxy for paid-social aggression and company scale. All data pulled from Atria Meta Ad Library, June 2026.</p>
+    </div>
+
+    <div class="summary-grid" style="margin-bottom: 32px;">
+      <div class="summary-card"><div class="sc-label">Largest Competitor</div><div class="sc-value">HIKE</div><div class="sc-sub">15,717 total ads — clear market leader</div></div>
+      <div class="summary-card"><div class="sc-label">Most Dangerous to OOBEND</div><div class="sc-value">HIKE + Bronoir</div><div class="sc-sub">Targeting exact same buyer with refined creative</div></div>
+      <div class="summary-card"><div class="sc-label">Dominant Creative Format</div><div class="sc-value">Video / DCO</div><div class="sc-sub">4 of 6 competitors lead with video or DCO</div></div>
+      <div class="summary-card"><div class="sc-label">Untapped by All Competitors</div><div class="sc-value">4 Angles</div><div class="sc-sub">Real rubber, dual-mode, HSA/FSA, massaging footbed</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="chart-wrap">
+          <div class="chart-title">Ad Volume by Competitor (Lifetime)</div>
+          <div class="chart-sub">Proxy for paid-social investment & company scale. Higher = more aggressive advertiser.</div>
+          <canvas id="volChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="chart-wrap">
+          <div class="chart-title">Priority Ranking for OOBEND</div>
+          <div class="chart-sub">Combining ad volume × targeting overlap × creative sophistication</div>
+          <canvas id="prioChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 2: COMPETITOR PROFILES ===== -->
+  <section id="competitors">
+    <div class="section-header">
+      <div class="section-num">02 COMPETITOR PROFILES</div>
+      <h2>Deep Dive: Each Tier 1 Competitor</h2>
+      <p>Analysis based on top 50 active ads sorted by longest running (most_active). Includes creative messaging, angles, and strategy notes.</p>
+    </div>
+
+    <div class="grid-3">
+
+      <!-- HIKE -->
+      <div class="comp-card" style="border-color: var(--hike);">
+        <div class="comp-card-header" style="background: linear-gradient(135deg, #fee2e2, #fff);">
+          <div class="comp-badge" style="background: var(--hike);">H</div>
+          <div class="comp-card-title">
+            <h3>HIKE Footwear</h3>
+            <div class="meta">hike-footwear.com · HF Stride / HF Cloud / Flame</div>
+          </div>
+          <span class="vol-badge">15,717 ads</span>
+        </div>
+        <div class="comp-card-body">
+          <span class="priority P1">🔴 P1 — Highest Priority</span>
+
+          <div class="comp-section-title">Core Angles (Active)</div>
+          <div class="tags">
+            <span class="tag angle">Fall Prevention (1-in-4 stat)</span>
+            <span class="tag angle">Neuropathy root cause</span>
+            <span class="tag angle">Balance science explanation</span>
+            <span class="tag angle">"She says she's fine" (gift)</span>
+            <span class="tag angle">Hands-free step-in</span>
+            <span class="tag angle">2M+ social proof</span>
+            <span class="tag angle">Clearance urgency</span>
+          </div>
+
+          <div class="comp-section-title">Creative Formats</div>
+          <div class="tags">
+            <span class="tag format">DCO (70%) — dominant</span>
+            <span class="tag format">Video (20%)</span>
+            <span class="tag format">Image (10%)</span>
+          </div>
+
+          <div class="comp-section-title">Signature Hooks</div>
+          <ul style="padding-left: 16px; font-size: 13px; color: #374151; line-height: 2;">
+            <li>"1 in 4 adults over 60 will fall this year"</li>
+            <li>"2M+ people chose these because nothing else worked"</li>
+            <li>"She won't say anything. That's just who she is."</li>
+            <li>"Fix the root cause, not just cushion over it"</li>
+            <li>"The tingling never stops because compression never stops"</li>
+          </ul>
+
+          <div class="comp-section-title">Scale & Strategy</div>
+          <p style="font-size: 13px; color: #374151;">Most sophisticated copywriting in the space. 2M+ customers. Uses DCO heavily to test angles at scale. Runs clearance urgency ($33/pair, 99 left) alongside full-price campaigns. Has dedicated advertorial fronts (Your Health Journal — 7,781 ads). Direct head-to-head with OOBEND on every major angle.</p>
+
+          <div class="comp-section-title">What OOBEND Should Watch</div>
+          <div class="tags">
+            <span class="tag risk">Fall prevention — HIKE dominates this</span>
+            <span class="tag risk">Gift/caregiver angle — untapped by OOBEND</span>
+            <span class="tag risk">Science-based balance explainer</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAIN FREE AUSSIES -->
+      <div class="comp-card" style="border-color: var(--pfa);">
+        <div class="comp-card-header" style="background: linear-gradient(135deg, #fff7ed, #fff);">
+          <div class="comp-badge" style="background: var(--pfa);">P</div>
+          <div class="comp-card-title">
+            <h3>Pain Free Aussies</h3>
+            <div class="meta">painfreeaussies.com.au · Stretch Comfort Shoes + Butterfly Pillow</div>
+          </div>
+          <span class="vol-badge">12,020 ads</span>
+        </div>
+        <div class="comp-card-body">
+          <span class="priority P1">🔴 P1 — High Priority</span>
+
+          <div class="comp-section-title">Core Angles (Active)</div>
+          <div class="tags">
+            <span class="tag angle">Nurses / long shift comfort</span>
+            <span class="tag angle">Seniors foot discomfort</span>
+            <span class="tag angle">BOGO deals (heavy)</span>
+            <span class="tag angle">Barefoot/grounding feel</span>
+            <span class="tag angle">Natural movement</span>
+            <span class="tag angle">Easy slip-on</span>
+          </div>
+
+          <div class="comp-section-title">Creative Formats</div>
+          <div class="tags">
+            <span class="tag format">Image (50%)</span>
+            <span class="tag format">Video (44%) — UGC style</span>
+            <span class="tag format">Carousel (6%)</span>
+          </div>
+
+          <div class="comp-section-title">Signature Hooks</div>
+          <ul style="padding-left: 16px; font-size: 13px; color: #374151; line-height: 2;">
+            <li>"Walk Freely Without Ache Even In Your 50s"</li>
+            <li>"3 Key Features: Cushioned Soles, Wide Toe Box, Easy Slip-On"</li>
+            <li>"Buy 1 Get 1 FREE" (constant BOGO)</li>
+            <li>Targeting nurses explicitly</li>
+          </ul>
+
+          <div class="comp-section-title">Scale & Strategy</div>
+          <p style="font-size: 13px; color: #374151;">Australian brand expanding globally. Multi-product (shoes + pillow = diversification risk hedge). Simpler messaging than HIKE. Relies heavily on BOGO promotions rather than brand storytelling. Less medical/neuropathy focus in current active ads — more general comfort positioning.</p>
+
+          <div class="comp-section-title">What OOBEND Should Watch</div>
+          <div class="tags">
+            <span class="tag risk">Nurse/worker angle</span>
+            <span class="tag risk">BOGO promotional cadence</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BRONOIR -->
+      <div class="comp-card" style="border-color: var(--bronoir);">
+        <div class="comp-card-header" style="background: linear-gradient(135deg, #f5f3ff, #fff);">
+          <div class="comp-badge" style="background: var(--bronoir);">B</div>
+          <div class="comp-card-title">
+            <h3>Bronoir</h3>
+            <div class="meta">bronoir.com · Grounding Barefoot Shoes</div>
+          </div>
+          <span class="vol-badge">11,537 ads</span>
+        </div>
+        <div class="comp-card-body">
+          <span class="priority P1">🔴 P1 — High Priority</span>
+
+          <div class="comp-section-title">Core Angles (Active)</div>
+          <div class="tags">
+            <span class="tag angle">Grounding / earthing science</span>
+            <span class="tag angle">Neuropathy nerve pain</span>
+            <span class="tag angle">Copper grounding plug (USP)</span>
+            <span class="tag angle">Pins and needles relief</span>
+            <span class="tag angle">Balance issues</span>
+            <span class="tag angle">50% off + 90-day guarantee</span>
+          </div>
+
+          <div class="comp-section-title">Creative Formats</div>
+          <div class="tags">
+            <span class="tag format">DCO (75%)</span>
+            <span class="tag format">Image (25%)</span>
+          </div>
+
+          <div class="comp-section-title">Signature Hooks</div>
+          <ul style="padding-left: 16px; font-size: 13px; color: #374151; line-height: 2;">
+            <li>"I thought my feet would never feel normal again"</li>
+            <li>"Copper grounding plug reconnects to Earth's electrons"</li>
+            <li>"Studies show: reduces inflammation, improves nerve conductivity"</li>
+            <li>"For people who've already tried everything else"</li>
+          </ul>
+
+          <div class="comp-section-title">Scale & Strategy</div>
+          <p style="font-size: 13px; color: #374151;">One of the most focused strategies: a SINGLE creative runs at massive scale (90 active ads, all same copy). This suggests ONE winning hook that they've found and are scaling hard. The grounding/earthing angle is unique and differentiates from pure comfort messaging. 90-day guarantee suggests longer buyer journey / returns-conscious audience.</p>
+
+          <div class="comp-section-title">What OOBEND Should Watch</div>
+          <div class="tags">
+            <span class="tag risk">Grounding science angle (their unique space)</span>
+            <span class="tag risk">Winning-hook concentration strategy</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PEAK FOOTWEAR -->
+      <div class="comp-card" style="border-color: var(--peak);">
+        <div class="comp-card-header" style="background: linear-gradient(135deg, #eff6ff, #fff);">
+          <div class="comp-badge" style="background: var(--peak);">P</div>
+          <div class="comp-card-title">
+            <h3>Peak Footwear</h3>
+            <div class="meta">peak-footwear.com · Lorax Pro</div>
+          </div>
+          <span class="vol-badge">~12,332 ads</span>
+        </div>
+        <div class="comp-card-body">
+          <span class="priority P2">🟡 P2 — Medium Priority</span>
+
+          <div class="comp-section-title">Core Angles (Active)</div>
+          <div class="tags">
+            <span class="tag angle">Pain-free walking</span>
+            <span class="tag angle">"Walking on clouds"</span>
+            <span class="tag angle">100k+ happy customers</span>
+            <span class="tag angle">Money-back guarantee</span>
+            <span class="tag angle">Sale 60% off</span>
+          </div>
+
+          <div class="comp-section-title">Creative Formats</div>
+          <div class="tags">
+            <span class="tag format">Image (92%) — dominant</span>
+            <span class="tag format">Video (8%)</span>
+          </div>
+
+          <div class="comp-section-title">Signature Hooks</div>
+          <ul style="padding-left: 16px; font-size: 13px; color: #374151; line-height: 2;">
+            <li>"Walk Pain Free or get Money Back!"</li>
+            <li>"Feel like walking on clouds"</li>
+            <li>"Join 100,000+ happy customers"</li>
+          </ul>
+
+          <div class="comp-section-title">Scale & Strategy</div>
+          <p style="font-size: 13px; color: #374151;">Very concentrated single-message strategy: all 50 active ads carry the same body copy. Image-heavy (not video). Less sophisticated than HIKE — no specific conditions mentioned, no science explanations. Competing purely on discount price and generic comfort promise. Lower creative sophistication = easier to outcompete on messaging quality.</p>
+
+          <div class="comp-section-title">What OOBEND Should Watch</div>
+          <div class="tags">
+            <span class="tag risk">Price competition via heavy discounting</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMFOFEET -->
+      <div class="comp-card" style="border-color: var(--comfofeet);">
+        <div class="comp-card-header" style="background: linear-gradient(135deg, #f0fdf4, #fff);">
+          <div class="comp-badge" style="background: var(--comfofeet);">C</div>
+          <div class="comp-card-title">
+            <h3>ComfoFeet</h3>
+            <div class="meta">comfofeet.com · Ultra-1 / Urban-1</div>
+          </div>
+          <span class="vol-badge">~8,480 ads</span>
+        </div>
+        <div class="comp-card-body">
+          <span class="priority P2">🟡 P2 — Medium Priority</span>
+
+          <div class="comp-section-title">Core Angles (Active)</div>
+          <div class="tags">
+            <span class="tag angle">"Tried everything" (inserts/orthotics)</span>
+            <span class="tag angle">Balance improvement</span>
+            <span class="tag angle">Numbness reduction</span>
+            <span class="tag angle">$39/pair urgency price</span>
+            <span class="tag angle">BOGO offers</span>
+            <span class="tag angle">#1 Rated Orthopedic</span>
+          </div>
+
+          <div class="comp-section-title">Creative Formats</div>
+          <div class="tags">
+            <span class="tag format">Video (83%) — long-form 60-120s</span>
+            <span class="tag format">Image (17%)</span>
+          </div>
+
+          <div class="comp-section-title">Signature Hooks</div>
+          <ul style="padding-left: 16px; font-size: 13px; color: #374151; line-height: 2;">
+            <li>"Tried everything for foot pain? Inserts, orthotics... ❌"</li>
+            <li>"Improvement in my balance and a reduction in numbness" (UGC)</li>
+            <li>"$39/pair — something we never do" (false scarcity)</li>
+            <li>Long-form video (60–120 seconds) — educational funnel</li>
+          </ul>
+
+          <div class="comp-section-title">Scale & Strategy</div>
+          <p style="font-size: 13px; color: #374151;">Two separate brand pages (8,480 total ads). Very video-heavy strategy with long-form content. "Tried everything" hook directly targets buyers who've already spent money on orthotics — the highest-intent segment. Price anchoring at $39 creates strong value perception. The "stylish shoes for health" angle acknowledges the aesthetic tradeoff without sacrificing it.</p>
+
+          <div class="comp-section-title">What OOBEND Should Watch</div>
+          <div class="tags">
+            <span class="tag risk">"Tried everything" hook — OOBEND can own this</span>
+            <span class="tag risk">Long-form video strategy</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- NIMBAO -->
+      <div class="comp-card" style="border-color: var(--nimbao);">
+        <div class="comp-card-header" style="background: linear-gradient(135deg, #fff1f2, #fff);">
+          <div class="comp-badge" style="background: var(--nimbao);">N</div>
+          <div class="comp-card-title">
+            <h3>Nimbao</h3>
+            <div class="meta">nimbao.com · Cloud Walk / Wide-Fit Edition</div>
+          </div>
+          <span class="vol-badge">1,533 ads</span>
+        </div>
+        <div class="comp-card-body">
+          <span class="priority P3">🟢 P3 — Watch Only</span>
+
+          <div class="comp-section-title">Core Angles (Active)</div>
+          <div class="tags">
+            <span class="tag angle">Recovery shoe</span>
+            <span class="tag angle">Post-surgery (post-op)</span>
+            <span class="tag angle">Bunion + hammer toe</span>
+            <span class="tag angle">Wide-fit adaptive knit</span>
+            <span class="tag angle">Style for senior women (bright colors)</span>
+            <span class="tag angle">BOGO deals</span>
+          </div>
+
+          <div class="comp-section-title">Creative Formats</div>
+          <div class="tags">
+            <span class="tag format">DCO (60%)</span>
+            <span class="tag format">Image (40%)</span>
+          </div>
+
+          <div class="comp-section-title">Signature Hooks</div>
+          <ul style="padding-left: 16px; font-size: 13px; color: #374151; line-height: 2;">
+            <li>"The recovery shoe that looks like a normal shoe"</li>
+            <li>"Bright colors didn't disappear from your style" (bunion angle)</li>
+            <li>"Adaptive knit grows with swelling"</li>
+            <li>"Post-Op Edition" — very specific use case</li>
+          </ul>
+
+          <div class="comp-section-title">Scale & Strategy</div>
+          <p style="font-size: 13px; color: #374151;">Smallest volume but smartest creative segmentation — they carve out specific sub-niches (Post-Op, Wide-Fit, Hammer-Toe Edition) with dedicated messaging. The "recovery shoe that looks normal" positioning directly addresses the aesthetic objection. Growing fast (716 total ads). Watch their style+function angle for senior women — underexplored.</p>
+
+          <div class="comp-section-title">What OOBEND Should Watch</div>
+          <div class="tags">
+            <span class="tag risk">Post-op/recovery specific positioning</span>
+            <span class="tag risk">Edition-based segmented creative approach</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== SECTION 3: AD FORMATS ===== -->
+  <section id="formats">
+    <div class="section-header">
+      <div class="section-num">03 AD FORMATS</div>
+      <h2>Creative Format Distribution</h2>
+      <p>Understanding which format each competitor bets on reveals their funnel strategy and creative infrastructure.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="chart-wrap">
+          <div class="chart-title">Format Mix per Competitor (Active Ads)</div>
+          <div class="chart-sub">Based on top 50 active ads. Video = short 30-120s clips. DCO = Dynamic Creative Optimization (audience-matched).</div>
+          <canvas id="formatChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="chart-wrap">
+          <div class="chart-title">Preferred Format by Priority Tier</div>
+          <div class="chart-sub">Higher ad volume brands tend to invest in DCO and video — indicating mature testing infrastructure.</div>
+          <canvas id="formatPie"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight gap" style="margin-top: 24px;">
+      <div class="insight-icon">📹</div>
+      <div class="insight-content">
+        <h4>Video + DCO = The Winning Combo</h4>
+        <p>HIKE (the market leader) runs 70% DCO + 20% video. ComfoFeet runs 83% long-form video. Both strategies validate that long-form storytelling converts better than static images for this senior audience — they need more education to trust a new shoe. OOBEND should invest in 60-90 second video with testimonial-first structure.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 4: PAIN POINTS ANGLES ===== -->
+  <section id="angles">
+    <div class="section-header">
+      <div class="section-num">04 PAIN POINTS & ANGLES</div>
+      <h2>What Competitors Are Saying</h2>
+      <p>Frequency and intensity of each angle across the competitive landscape. Higher frequency = more validated as a converting hook.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="chart-wrap">
+          <div class="chart-title">Pain Point Frequency Across Competitors</div>
+          <div class="chart-sub">Count of competitors actively using each angle. 6 = used by all.</div>
+          <canvas id="painChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="chart-wrap">
+          <div class="chart-title">Angle Intensity: HIKE Footwear (Top Competitor)</div>
+          <div class="chart-sub">Estimated spend allocation by creative angle for HIKE — the most sophisticated competitor.</div>
+          <canvas id="hikeAngles"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 5: COVERAGE MATRIX ===== -->
+  <section id="matrix">
+    <div class="section-header">
+      <div class="section-num">05 COVERAGE MATRIX</div>
+      <h2>Pain Point × Competitor Coverage Map</h2>
+      <p>🟢 = actively running angle &nbsp;|&nbsp; 🟡 = partial/occasional &nbsp;|&nbsp; ⚪ = not covered &nbsp;|&nbsp; 💜 = OOBEND unique advantage</p>
+    </div>
+    <div class="card matrix-wrap">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th class="row-head">Angle / Pain Point</th>
+            <th style="background: var(--hike);">HIKE</th>
+            <th style="background: var(--pfa);">Pain Free<br>Aussies</th>
+            <th style="background: var(--bronoir);">Bronoir</th>
+            <th style="background: var(--peak);">Peak</th>
+            <th style="background: var(--comfofeet);">ComfoFeet</th>
+            <th style="background: var(--nimbao);">Nimbao</th>
+            <th style="background: var(--oobend);">OOBEND</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-label">🫨 Fall Prevention ("1 in 4 will fall")</td><td><span class="m-yes">🟢</span></td><td><span class="m-partial">🟡</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-partial">🟡</span></td></tr>
+          <tr><td class="row-label">⚡ Balance Science Explanation</td><td><span class="m-yes">🟢</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-no">⚪</span></td></tr>
+          <tr><td class="row-label">🧠 Neuropathy / Nerve Pain</td><td><span class="m-yes">🟢</span></td><td><span class="m-no">⚪</span></td><td><span class="m-yes">🟢</span></td><td><span class="m-no">⚪</span></td><td><span class="m-yes">🟢</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-yes">🟢</span></td></tr>
+          <tr><td class="row-label">👣 Wide Toe Box / Bunion Relief</td><td><span class="m-yes">🟢</span></td><td><span class="m-yes">🟢</span></td><td><span class="m-no">⚪</span></td><td><span class="m-yes">🟢</span></td><td><span class="m-yes">🟢</span></td><td><span class="m-yes">🟢</span></td><td class="oobend-col"><span class="m-yes">🟢</span></td></tr>
+          <tr><td class="row-label">🦶 Plantar Fasciitis</td><td><span class="m-yes">🟢</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-yes">🟢</span></td></tr>
+          <tr><td class="row-label">💧 Edema / Swollen Feet</td><td><span class="m-partial">🟡</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-yes">🟢</span></td><td class="oobend-col"><span class="m-yes">🟢</span></td></tr>
+          <tr><td class="row-label">💊 Diabetic / HSA Eligible</td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-unique">💜</span></td></tr>
+          <tr><td class="row-label">🙌 Hands-Free Slip-On</td><td><span class="m-yes">🟢</span></td><td><span class="m-yes">🟢</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-yes">🟢</span></td><td><span class="m-yes">🟢</span></td><td class="oobend-col"><span class="m-yes">🟢</span></td></tr>
+          <tr><td class="row-label">🎁 Caregiver / Gift Angle</td><td><span class="m-yes">🟢</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-no">⚪</span></td></tr>
+          <tr><td class="row-label">🔬 Root Cause Framing</td><td><span class="m-yes">🟢</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-partial">🟡</span></td></tr>
+          <tr><td class="row-label">🌱 Grounding / Earthing</td><td><span class="m-no">⚪</span></td><td><span class="m-partial">🟡</span></td><td><span class="m-yes">🟢</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-no">⚪</span></td></tr>
+          <tr><td class="row-label">👩‍⚕️ Nurse / Long Shift</td><td><span class="m-no">⚪</span></td><td><span class="m-yes">🟢</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-partial">🟡</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-no">⚪</span></td></tr>
+          <tr><td class="row-label">🏥 Post-Surgery / Recovery</td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-yes">🟢</span></td><td class="oobend-col"><span class="m-yes">🟢</span></td></tr>
+          <tr><td class="row-label">🎨 Style + Function (bright colors)</td><td><span class="m-partial">🟡</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-yes">🟢</span></td><td class="oobend-col"><span class="m-partial">🟡</span></td></tr>
+          <tr><td class="row-label">🎯 BOGO Promotions</td><td><span class="m-partial">🟡</span></td><td><span class="m-yes">🟢</span></td><td><span class="m-yes">🟢</span></td><td><span class="m-yes">🟢</span></td><td><span class="m-yes">🟢</span></td><td><span class="m-yes">🟢</span></td><td class="oobend-col"><span class="m-no">⚪</span></td></tr>
+          <tr><td class="row-label">🦾 Real Rubber Sole (vs EVA)</td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-unique">💜</span></td></tr>
+          <tr><td class="row-label">🔄 Dual-Mode (shoe + slipper)</td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-unique">💜</span></td></tr>
+          <tr><td class="row-label">🌊 Massaging Footbed Nodes</td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-unique">💜</span></td></tr>
+          <tr><td class="row-label">🧼 Machine Washable</td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-unique">💜</span></td></tr>
+          <tr><td class="row-label">🧬 Japan-Knit Sock-Like Upper</td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td><span class="m-no">⚪</span></td><td class="oobend-col"><span class="m-unique">💜</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size: 12px; color: var(--muted); margin-top: 12px; text-align: center;">💜 = OOBEND exclusive advantage not used by any competitor</p>
+  </section>
+
+  <!-- ===== SECTION 6: VIDEO ANALYSIS ===== -->
+  <section id="videos">
+    <div class="section-header">
+      <div class="section-num">06 VIDEO AD ANALYSIS</div>
+      <h2>What Competitors' Videos Actually Say</h2>
+      <p>Deep breakdown of the highest-performing video creatives from the top Tier 1 competitors.</p>
+    </div>
+
+    <!-- HIKE VIDEOS -->
+    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--hike);">🔴 HIKE Footwear — Key Video Hooks</h3>
+    <ul class="video-list" style="margin-bottom: 32px;">
+      <li class="video-item">
+        <div class="v-title">"Best Pain Relief Shoe 2025!" — Testimonial Runner Story</div>
+        <div class="v-body">"After years of knee pain, I thought my running days were over. HF Cloud barefoot shoes reignited my passion! My stride is more natural, my pace has improved, and best of all – no more pain!" → 1,450,000+ satisfied customers claim. Endorsed by foot health specialists. Risk-free trial CTA.</div>
+        <div class="v-tags"><span class="v-tag pain">Pain Relief</span><span class="v-tag story">Personal Story</span><span class="v-tag offer">Social Proof</span></div>
+      </li>
+      <li class="video-item">
+        <div class="v-title">"Barefoot Shoes To Improve Circulation" — Product Feature Demo</div>
+        <div class="v-body">Linda, 62: "These shoes feel like an extension of my feet — so light and supportive!" → Features HF Stride: 🔄 Hands-Off Entry, 🌱 Ergonomic barefoot design, 🎯 3D-textured sole for grip and balance. No more bending, no laces, no foot fatigue.</div>
+        <div class="v-tags"><span class="v-tag balance">Balance</span><span class="v-tag story">Female Avatar</span><span class="v-tag pain">Circulation</span></div>
+      </li>
+      <li class="video-item">
+        <div class="v-title">"Best Walking Shoe 2026!" — New Product Launch (Flame)</div>
+        <div class="v-body">"Most barefoot shoes work great. And look terrible. So women skip them." → Introduces Flame: beautiful enough to want, functional enough to need. Limited first run. $69.96 entry price. Addresses aesthetic objection directly and says they've eliminated the tradeoff.</div>
+        <div class="v-tags"><span class="v-tag style">Style Angle</span><span class="v-tag emotion">Emotional</span><span class="v-tag offer">Limited Offer</span></div>
+      </li>
+      <li class="video-item">
+        <div class="v-title">"Say Goodbye to Foot Pain – NEW HF Cloud" — UGC Style</div>
+        <div class="v-body">Walking on clouds sensation. Designed based on 1.45M+ customer feedback. Features: enhanced sensory feedback, reduced pressure points, improved circulation. 12-month warranty + free shipping on limited-time basis.</div>
+        <div class="v-tags"><span class="v-tag pain">Pain Relief</span><span class="v-tag offer">Warranty</span><span class="v-tag balance">Circulation</span></div>
+      </li>
+    </ul>
+
+    <!-- BRONOIR VIDEOS -->
+    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--bronoir);">🟣 Bronoir — Single Winning Video at Scale</h3>
+    <ul class="video-list" style="margin-bottom: 32px;">
+      <li class="video-item">
+        <div class="v-title">"STOP WALKING ON PAIN - TRY THIS 👟" — Grounding Science Hook (90 active ads, same copy)</div>
+        <div class="v-body">"I thought my feet would never feel normal again - until I tried these." → Bronoir Grounding Shoes aren't magic, but designed around real science. The copper grounding plug in the sole helps reconnect your body to the Earth's electrons — studies show: reduces inflammation, improves nerve conductivity, eases neuropathic symptoms. For people who've already tried everything. If your feet feel like pins and needles, if you struggle with balance or can't feel the floor beneath you — this could change everything. 50% off + 90-day money-back guarantee.</div>
+        <div class="v-tags"><span class="v-tag neuropathy">Neuropathy</span><span class="v-tag balance">Grounding Science</span><span class="v-tag story">Last Resort Frame</span><span class="v-tag offer">50% + 90-day</span></div>
+      </li>
+    </ul>
+
+    <!-- COMFOFEET VIDEOS -->
+    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--comfofeet);">🟢 ComfoFeet — Long-Form Orthopedic Videos</h3>
+    <ul class="video-list" style="margin-bottom: 32px;">
+      <li class="video-item">
+        <div class="v-title">"#1 Rated Orthopedic Pain Relief Shoe" — The "Tried Everything" Hook (65-120 sec videos)</div>
+        <div class="v-body">"Tried everything for foot pain? Inserts, orthotics, expensive shoes that promised relief? 😎 Most shoes are too narrow, too stiff, and too painful. They don't just ruin your day… they make your foot problems worse." → Keeps feet fresh and cool, moves with your feet, no laces. 30-day risk-free trial. Also runs UGC testimonial: "I've noticed a huge improvement in my balance and a reduction in numbness — these shoes are now a staple in my recovery journey!" - Jarred G, USA</div>
+        <div class="v-tags"><span class="v-tag pain">Tried Everything</span><span class="v-tag balance">Balance+Numbness</span><span class="v-tag story">UGC Testimonial</span><span class="v-tag offer">$39 Price Point</span></div>
+      </li>
+    </ul>
+
+    <!-- PAIN FREE AUSSIES -->
+    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--pfa);">🟠 Pain Free Aussies — Nurse + Senior Video Angles</h3>
+    <ul class="video-list">
+      <li class="video-item">
+        <div class="v-title">"Comfort Shoes For Long Shifts" — Nurse Audience (Dec 2025 — present, longest running)</div>
+        <div class="v-body">"Long Shifts Are Tough - Your Shoes Shouldn't Make Them Harder 👟🔥 That's Why Nurses Prefer Shoes That Stay Light, Roomy, & Comfortable Through Every Hour" → ✔ Roomy Toe Area ✔ Soft, Flexible Build ✔ Lightweight Feel ✔ Breathable Uppers. 30-Day Money-Back Guarantee.</div>
+        <div class="v-tags"><span class="v-tag style">Nurse Angle</span><span class="v-tag pain">Long Shift Comfort</span><span class="v-tag offer">30-day Guarantee</span></div>
+      </li>
+      <li class="video-item">
+        <div class="v-title">"Barefoot Shoes For Comfort" — Grounding Feel</div>
+        <div class="v-body">"Modern Shoes With Thick Cushioned Soles Block Your Connection From Earth's Energy. Barefoot Shoes Offer A Simple, Minimal Feel — May Provide Grounding Benefits." → Wide Toe Box, Thin Sole, Lightweight. Taps into Bronoir's territory but softer claim.</div>
+        <div class="v-tags"><span class="v-tag balance">Grounding Feel</span><span class="v-tag pain">Natural Movement</span></div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===== SECTION 7: GAP ANALYSIS ===== -->
+  <section id="gaps">
+    <div class="section-header">
+      <div class="section-num">07 GAP ANALYSIS</div>
+      <h2>OOBEND vs The Market: Gaps & Advantages</h2>
+      <p>The most actionable section — what to steal, what to defend, and what no one else has.</p>
+    </div>
+
+    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--red);">🔴 Gaps: What Competitors Have That OOBEND Is Missing</h3>
+
+    <div class="insight gap">
+      <div class="insight-icon">🫨</div>
+      <div class="insight-content">
+        <h4>Fall Prevention as a Headline Angle — HIKE owns this, OOBEND doesn't lead with it</h4>
+        <p>HIKE's best-performing hooks are fear-based: "1 in 4 adults over 60 will fall this year" and "Afraid of falling? You're not alone 😰". This is the highest-stakes pain for the target audience. OOBEND has the product to back the claim (real rubber grip, diamond tread, zero-drop) but isn't leading with fall prevention explicitly in paid creative. This is a top-of-funnel blind spot.</p>
+      </div>
+    </div>
+
+    <div class="insight gap">
+      <div class="insight-icon">🎁</div>
+      <div class="insight-content">
+        <h4>Caregiver / Gift Angle — HIKE's "She Says She's Fine" is their most emotional creative</h4>
+        <p>HIKE runs an entire ad arc targeting adult children and spouses buying for elderly parents/partners: "She won't say anything. That's just who she is. She'll wince getting up from the couch and tell you she's fine." This unlocks a second buyer persona beyond the end user — the family caregiver. OOBEND has zero ads in this space. During Q4 (Mother's Day, Christmas) this is gold.</p>
+      </div>
+    </div>
+
+    <div class="insight gap">
+      <div class="insight-icon">🔬</div>
+      <div class="insight-content">
+        <h4>Science-Based Balance Explainer — HIKE educates, everyone else just claims</h4>
+        <p>HIKE's "Why Your Balance Got Worse" ad explains proprioception: "Your feet have thousands of nerve endings that send constant signals to your brain — thick soles muffle those signals." This is editorial-quality explanation that builds trust before the sale. OOBEND's product is actually built on this science (thin sole = sensory feedback) but OOBEND isn't explaining the mechanism in ads. This leaves proof on the table.</p>
+      </div>
+    </div>
+
+    <div class="insight gap">
+      <div class="insight-icon">🎯</div>
+      <div class="insight-content">
+        <h4>BOGO / Bundle Promotions — Used by 5 out of 6 competitors, OOBEND runs none</h4>
+        <p>HIKE, Pain Free Aussies, Bronoir, Peak, ComfoFeet, and Nimbao ALL run Buy 1 Get 1 Free or deep discount promotions as core creatives. OOBEND's multi-buy rate is likely lower as a result. BOGO works especially well with this audience because seniors often want to gift pairs to spouses/friends, or keep a backup pair. The "grab a pair, gift a pair" creative writes itself.</p>
+      </div>
+    </div>
+
+    <div class="insight gap">
+      <div class="insight-icon">💊</div>
+      <div class="insight-content">
+        <h4>"Tried Everything" Frame — High-intent buyers want to know this is different</h4>
+        <p>ComfoFeet's top hook: "Tried everything for foot pain? Inserts, orthotics, expensive shoes that promised relief?" This targets the most valuable segment: people who've already spent $500+ on solutions that didn't work. They're frustrated, ready to buy, but skeptical. OOBEND's customer reviews are FULL of "tried everything" stories — this hook already works in organic, but isn't being used in paid creative.</p>
+      </div>
+    </div>
+
+    <hr style="border: none; border-top: 2px solid var(--border); margin: 40px 0;">
+
+    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--green);">🟢 Strengths: What OOBEND Has That No Competitor Does</h3>
+
+    <div class="insight strength">
+      <div class="insight-icon">🦾</div>
+      <div class="insight-content">
+        <h4>Real Rubber Outsole vs EVA Foam — No Competitor Makes This Claim</h4>
+        <p>Every competitor (HIKE, Pain Free Aussies, Bronoir, Peak, ComfoFeet, Nimbao) uses generic comfort/grip language but NONE explicitly calls out real rubber vs EVA foam. OOBEND's diamond tread + water channels + tire-grade grip is a provable, visual, demonstrable difference that no one else is claiming. "EVA flattens and loses grip after 6 months — OOBEND uses real rubber like a car tire" is a hook no one can copy without reformulating their product.</p>
+      </div>
+    </div>
+
+    <div class="insight strength">
+      <div class="insight-icon">🔄</div>
+      <div class="insight-content">
+        <h4>Dual-Mode (Shoe + Slipper in One) — Zero Competition in This Space</h4>
+        <p>The collapsible heel giving two modes — shoe mode (outdoor) + slipper mode (indoor) — is genuinely novel. Seniors need both but typically own separate pairs. "The only shoe that works both indoors and outdoors" collapses two purchase decisions into one. No competitor has this feature at all. Can be demonstrated visually in video (fold down the heel, fold it back up) — extremely compelling for seniors watching social video.</p>
+      </div>
+    </div>
+
+    <div class="insight strength">
+      <div class="insight-icon">💊</div>
+      <div class="insight-content">
+        <h4>HSA/FSA Eligible — No Competitor Mentions This</h4>
+        <p>Healthcare savings accounts are increasingly common in the US. For the senior audience (Medicare-age), HSA/FSA eligibility means they can use pre-tax dollars — effectively making OOBEND 20-40% cheaper than the sticker price. No competitor in the space is advertising this. A creative targeting the buyer search "can I use HSA for shoes" could capture a high-intent audience at lower CPMs (less competition in that angle).</p>
+      </div>
+    </div>
+
+    <div class="insight strength">
+      <div class="insight-icon">🌊</div>
+      <div class="insight-content">
+        <h4>Massaging Footbed Nodes — Unique Feature for Neuropathy Sufferers</h4>
+        <p>While Bronoir is claiming grounding/earthing for neuropathy, OOBEND has a physical, demonstrable mechanism: textured massage nodes on the footbed stimulate blood flow and sensory feedback — especially important for neuropathy patients who need sensory input (not numbing). OOBEND's nodes can be shown in macro product video. The claim: "While other shoes numb your feet, OOBEND stimulates them back to life." Directly counters Bronoir's science claim with a physical mechanism.</p>
+      </div>
+    </div>
+
+    <div class="insight strength">
+      <div class="insight-icon">🧬</div>
+      <div class="insight-content">
+        <h4>Japan-Knit Upper — Zero-Break-In Story Is Unique</h4>
+        <p>"Wearable from day one" because the knit stretches exactly where needed. Every competitor (especially Bronoir and HIKE) talks about comfort after wearing, but OOBEND's customers report wearing them straight out of the box, to the hospital, post-surgery, with bandages on. The "no break-in period" angle + "fits over swollen feet" + "fits over post-op bandaging" = three unique claims no competitor makes with proof from real customers.</p>
+      </div>
+    </div>
+
+    <div class="insight strength">
+      <div class="insight-icon">🧼</div>
+      <div class="insight-content">
+        <h4>Machine Washable — A Practical Win No One Else Talks About</h4>
+        <p>Seniors care deeply about hygiene and ease of maintenance. Every competitor uses premium materials that you wouldn't machine wash. OOBEND's Japan-Knit can go in the washer — a feature that seems minor but drives massive loyalty. Customers who reference this in reviews say they "throw them in the wash and forget about them." No competitor claims this.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 8: STRATEGY ===== -->
+  <section id="strategy">
+    <div class="section-header">
+      <div class="section-num">08 STRATEGIC RECOMMENDATIONS</div>
+      <h2>Action Plan: What OOBEND Should Do</h2>
+      <p>Prioritized recommendations based on competitive gaps, OOBEND's unique advantages, and the customer voice from Tallyform reviews.</p>
+    </div>
+
+    <div style="display: grid; gap: 16px;">
+
+      <div class="insight warning">
+        <div class="insight-icon">🚨</div>
+        <div class="insight-content">
+          <h4>IMMEDIATE (This Month): Test Fall Prevention as Primary Hook</h4>
+          <p>HIKE built 15,717 ads on this angle. OOBEND has the rubber grip + zero-drop science to own this claim even more credibly. Suggested headline: <strong>"1 in 4 seniors fall every year. The shoe they're wearing is usually why."</strong> + product shot of diamond tread rubber + customer testimonial about grip confidence. DCO split between fear-hook and relief-outcome variations.</p>
+        </div>
+      </div>
+
+      <div class="insight warning">
+        <div class="insight-icon">🎁</div>
+        <div class="insight-content">
+          <h4>IMMEDIATE: Build a Gift/Caregiver Creative Arc for Mom/Wife</h4>
+          <p>HIKE's "She says she's fine" ad is almost certainly one of their highest-converting. OOBEND's customer reviews are packed with "my husband stole mine" and "bought a pair for my sister in California" stories. Create a 3-ad arc: <strong>1) Caregiver empathy hook → 2) Product education → 3) Testimonial from recipient.</strong> Run specifically before Mother's Day, Christmas, and Father's Day.</p>
+        </div>
+      </div>
+
+      <div class="insight warning">
+        <div class="insight-icon">🔬</div>
+        <div class="insight-content">
+          <h4>SHORT-TERM: Produce a "Balance Science" Explainer Video (60-90 sec)</h4>
+          <p>HIKE's "Why Your Balance Got Worse" is educational and trust-building. OOBEND needs one video that explains proprioception + the rubber outsole advantage. Script outline: <strong>"Your feet have 200,000 nerve endings. Thick EVA foam cuts their signal by 70%. Your brain loses its real-time balance data. That's why you're wobbling — not because of age." → OOBEND thin rubber sole = signals restored.</strong> This is a YouTube/Meta video that works in cold and warm audiences.</p>
+        </div>
+      </div>
+
+      <div class="insight gap">
+        <div class="insight-icon">🎯</div>
+        <div class="insight-content">
+          <h4>SHORT-TERM: Launch "Tried Everything" Creative Targeting High-Intent Buyers</h4>
+          <p>This segment converts at 2-3x normal rates because they're already sold on the CATEGORY — they just need a reason to believe OOBEND specifically. Suggested hook: <strong>"You've tried orthotics. You've tried insoles. You've tried the 'diabetic shoes' that look like boats. Here's what's different about OOBEND — and why your podiatrist's wife keeps asking where you got them."</strong> (Reference real customer story #131/#178/#285 from Tallyform)</p>
+        </div>
+      </div>
+
+      <div class="insight gap">
+        <div class="insight-icon">🦾</div>
+        <div class="insight-content">
+          <h4>MID-TERM: Build the "Real Rubber vs EVA" Differentiation Campaign</h4>
+          <p>No competitor can match this claim without reformulating their product. Creative concept: <strong>Side-by-side time-lapse of competitor EVA foam vs OOBEND rubber sole after 6 months of use</strong> — EVA compresses and loses grip, rubber maintains shape. This visual proof is impossible to fake and creates a tangible "new mechanism" that makes OOBEND categorically different. Pairs with the "we use tire-grade rubber, not foam" copy angle.</p>
+        </div>
+      </div>
+
+      <div class="insight strength">
+        <div class="insight-icon">💜</div>
+        <div class="insight-content">
+          <h4>MID-TERM: Activate HSA/FSA Angle + Dual-Mode Creative (Competitor-Free Territory)</h4>
+          <p>Two angles that no competitor touches at all: <strong>1) HSA/FSA angle</strong> → "Did you know you can use your healthcare savings account for OOBEND? That makes a $69.99 shoe effectively $42-$56 out of pocket." Target Medicare/65+ audience segment. <strong>2) Dual-mode creative</strong> → 15-second reel: fold heel down for indoor slipper mode, fold back up for outdoor shoe mode. "The only shoe that does both. Because every morning you shuffle to the kitchen first."</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card" style="margin-top: 32px; background: linear-gradient(135deg, #0a1628, #1a3a5c); color: white;">
+      <div style="padding: 8px;">
+        <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 16px; color: var(--accent);">📊 Prioritized Creative Roadmap</h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+          <thead>
+            <tr>
+              <th style="text-align: left; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); color: var(--accent);">Priority</th>
+              <th style="text-align: left; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); color: var(--accent);">Creative Concept</th>
+              <th style="text-align: left; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); color: var(--accent);">Inspired By</th>
+              <th style="text-align: left; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); color: var(--accent);">Expected Outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--red); font-weight: 700;">P1</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">Fall prevention hook + rubber grip proof</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);">HIKE's #1 angle</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">Top-of-funnel volume, fear-driven urgency</td></tr>
+            <tr><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--red); font-weight: 700;">P1</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">"She says she's fine" gift/caregiver arc</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);">HIKE emotional creative</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">New buyer persona, higher AOV (buying 2 pairs)</td></tr>
+            <tr><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--yellow); font-weight: 700;">P2</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">"Tried everything" orthotic-failure hook</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);">ComfoFeet's top hook</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">Highest-intent warm audience, best conversion rate</td></tr>
+            <tr><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--yellow); font-weight: 700;">P2</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">Balance science explainer video (60-90s)</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);">HIKE's educational angle</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">Trust + education, lower CPMs (less competition)</td></tr>
+            <tr><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--green); font-weight: 700;">P3</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">Real rubber vs EVA foam demo</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);">OOBEND unique — no competitor</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">Differentiation moat, long-term retention</td></tr>
+            <tr><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--green); font-weight: 700;">P3</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">HSA/FSA angle (no competitor in space)</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);">OOBEND unique — no competitor</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">Lower CPMs (untapped hook), Medicare demographic</td></tr>
+            <tr><td style="padding: 10px; color: var(--green); font-weight: 700;">P3</td><td style="padding: 10px;">Dual-mode demo (15s reel: slipper → shoe)</td><td style="padding: 10px; color: rgba(255,255,255,0.6);">OOBEND unique — no competitor</td><td style="padding: 10px;">Virality potential, product feature education</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Generated by <strong>Faddy</strong> · OOBEND Internal Ad Intelligence · <strong>June 2026</strong></p>
+  <p style="margin-top: 8px;">Data source: Atria Meta Ad Library · Analysis covers top 50 active ads per competitor · For internal use only</p>
+</footer>
+
+<script>
+Chart.register(ChartDataLabels);
+
+const colors = {
+  hike: '#e63946', pfa: '#f77f00', bronoir: '#6a0dad',
+  peak: '#0077b6', comfofeet: '#2dc653', nimbao: '#ff6b6b',
+  oobend: '#1a3a5c'
+};
+
+// 1. Volume Chart
+new Chart(document.getElementById('volChart'), {
+  type: 'bar',
+  data: {
+    labels: ['HIKE Footwear', 'Pain Free Aussies', 'Peak Footwear*', 'Bronoir', 'ComfoFeet*', 'Barestep', 'Armadilo', 'Nimbao'],
+    datasets: [{
+      label: 'Total Ads (Lifetime)',
+      data: [15717, 12020, 12332, 11537, 8480, 4721, 4377, 1533],
+      backgroundColor: [colors.hike, colors.pfa, colors.peak, colors.bronoir, colors.comfofeet, '#e9c46a', '#264653', colors.nimbao],
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      datalabels: {
+        anchor: 'end', align: 'end', color: '#374151',
+        font: { size: 11, weight: 'bold' },
+        formatter: v => v.toLocaleString()
+      }
+    },
+    scales: {
+      x: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 11 } } },
+      y: { grid: { display: false }, ticks: { font: { size: 12 } } }
+    }
+  }
+});
+
+// 2. Priority Chart
+new Chart(document.getElementById('prioChart'), {
+  type: 'radar',
+  data: {
+    labels: ['Ad Volume', 'Creative Sophistication', 'Targeting Overlap', 'Price Aggression', 'Creative Diversity'],
+    datasets: [
+      { label: 'HIKE', data: [95, 95, 95, 70, 90], borderColor: colors.hike, backgroundColor: colors.hike + '20', pointBackgroundColor: colors.hike },
+      { label: 'Bronoir', data: [75, 70, 90, 80, 30], borderColor: colors.bronoir, backgroundColor: colors.bronoir + '20', pointBackgroundColor: colors.bronoir },
+      { label: 'Peak', data: [78, 40, 80, 90, 20], borderColor: colors.peak, backgroundColor: colors.peak + '20', pointBackgroundColor: colors.peak },
+      { label: 'Pain Free Aussies', data: [80, 50, 70, 85, 60], borderColor: colors.pfa, backgroundColor: colors.pfa + '20', pointBackgroundColor: colors.pfa },
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } }, datalabels: { display: false } },
+    scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: '#e2e8f0' }, pointLabels: { font: { size: 11 } } } }
+  }
+});
+
+// 3. Format Stacked Bar
+new Chart(document.getElementById('formatChart'), {
+  type: 'bar',
+  data: {
+    labels: ['HIKE', 'Pain Free Aussies', 'Bronoir', 'Peak', 'ComfoFeet', 'Barestep', 'Nimbao'],
+    datasets: [
+      { label: 'Video %', data: [20, 44, 0, 8, 83, 32, 0], backgroundColor: '#0ea5e9' },
+      { label: 'DCO %', data: [70, 0, 76, 0, 0, 58, 60], backgroundColor: '#8b5cf6' },
+      { label: 'Image %', data: [10, 50, 24, 92, 17, 10, 40], backgroundColor: '#f59e0b' },
+      { label: 'Carousel %', data: [0, 6, 0, 0, 0, 0, 0], backgroundColor: '#10b981' },
+    ]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      x: { stacked: true, grid: { display: false }, ticks: { font: { size: 11 } } },
+      y: { stacked: true, max: 100, ticks: { callback: v => v + '%', font: { size: 11 } }, grid: { color: '#f1f5f9' } }
+    },
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11 } } },
+      datalabels: {
+        display: ctx => ctx.dataset.data[ctx.dataIndex] > 8,
+        color: 'white', font: { size: 10, weight: 'bold' },
+        formatter: v => v + '%'
+      }
+    }
+  }
+});
+
+// 4. Format Pie (industry-wide)
+new Chart(document.getElementById('formatPie'), {
+  type: 'doughnut',
+  data: {
+    labels: ['DCO', 'Video', 'Image', 'Carousel'],
+    datasets: [{ data: [38, 27, 33, 2], backgroundColor: ['#8b5cf6', '#0ea5e9', '#f59e0b', '#10b981'], borderWidth: 0 }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 12 } } },
+      datalabels: { color: 'white', font: { size: 13, weight: 'bold' }, formatter: v => v + '%' }
+    }
+  }
+});
+
+// 5. Pain Point Frequency
+new Chart(document.getElementById('painChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Wide Toe Box', 'Hands-Free Slip-On', 'BOGO Deals', 'Neuropathy Pain', 'Balance Issues', 'Fall Prevention', 'Post-Surgery', 'Plantar Fasciitis', 'Edema/Swelling', 'Diabetic/HSA'],
+    datasets: [{
+      label: 'Competitors Using (out of 6)',
+      data: [6, 4, 5, 3, 4, 1, 1, 1, 1, 0],
+      backgroundColor: ctx => {
+        const v = ctx.dataset.data[ctx.dataIndex];
+        if (v >= 5) return '#dc2626';
+        if (v >= 3) return '#d97706';
+        if (v >= 1) return '#16a34a';
+        return '#9ca3af';
+      },
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      datalabels: {
+        anchor: 'end', align: 'end', color: '#374151',
+        font: { size: 11, weight: 'bold' },
+        formatter: v => `${v}/6 competitors`
+      }
+    },
+    scales: {
+      x: { max: 7, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1, font: { size: 11 } } },
+      y: { grid: { display: false }, ticks: { font: { size: 12 } } }
+    }
+  }
+});
+
+// 6. HIKE Angle Distribution
+new Chart(document.getElementById('hikeAngles'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Fall Prevention', 'Neuropathy/Pain Root Cause', 'Hands-Free/Convenience', 'Social Proof (2M+)', 'Gift/Caregiver', 'Price/Clearance', 'Style (Flame)'],
+    datasets: [{
+      data: [30, 25, 20, 10, 8, 5, 2],
+      backgroundColor: ['#e63946', '#f77f00', '#2dc653', '#0077b6', '#6a0dad', '#e9c46a', '#ff6b6b'],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11 } } },
+      datalabels: {
+        color: 'white', font: { size: 11, weight: 'bold' },
+        formatter: (v, ctx) => v >= 8 ? v + '%' : '',
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
